@@ -1,3 +1,5 @@
+[ ![Download](https://api.bintray.com/packages/paulschwarz/sbt-plugins/seeder/images/download.svg?version=0.0.0) ](https://bintray.com/paulschwarz/sbt-plugins/seeder/0.0.0/link)
+
 # Seeding
 
 Seeding helps you set up test scenarios quickly. Two use cases immediately spring to mind.
