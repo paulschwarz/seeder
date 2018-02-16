@@ -1,5 +1,5 @@
 lazy val commonSettings = Seq(
-  version in ThisBuild := "0.0.1",
+  version in ThisBuild := "0.0.2",
   organization in ThisBuild := "me.paulschwarz"
 )
 
@@ -12,7 +12,9 @@ lazy val root = (project in file("."))
     licenses += ("MIT", url("https://opensource.org/licenses/MIT")),
     publishMavenStyle := false,
     bintrayRepository := "sbt-plugins",
-    bintrayOrganization in bintray := None
+    bintrayOrganization in bintray := Some("paulschwarz"),
+    publishMavenStyle := true,
+    pomIncludeRepository := { _ ⇒ false }
   )
 
 libraryDependencies += "junit" % "junit" % "4.12"

@@ -1,4 +1,4 @@
-[ ![Download](https://api.bintray.com/packages/paulschwarz/sbt-plugins/seeder/images/download.svg?version=0.0.0) ](https://bintray.com/paulschwarz/sbt-plugins/seeder/0.0.0/link)
+[ ![Download](https://api.bintray.com/packages/paulschwarz/sbt-plugins/seeder/images/download.svg) ](https://bintray.com/paulschwarz/sbt-plugins/seeder/_latestVersion)
 
 # Seeding
 
