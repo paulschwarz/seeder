@@ -6,63 +6,54 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class SeedRunnerTest {
-
-  private Seeder mockSeeder;
-
-  @Before
-  public void setup() {
-    mockSeeder = mock(Seeder.class);
-  }
 
   @Test
   public void should_return_list_of_seeders() {
-    List<Seeder> seeders = SeedRunner.seeders(mockSeeder);
+    List<Seeder> seeders = SeedRunner.seeders(mock(Seeder.class));
     assertEquals(1, seeders.size());
   }
 
   @Test
   public void should_not_run_when_disabled() {
-    SeedRunner seedRunner = spy(new ExampleSeedRunner(false));
+    SeedRunner seedRunner = spy(new SeedRunner(false) {
+      @Override
+      protected List<Seeder> provideSeeders() {
+        return null;
+      }
+    });
+
     verify(seedRunner, never()).run();
-  }
-
-  @Test
-  public void should_run() {
-    new ExampleSeedRunner(true);
-    verify(mockSeeder).clean();
-    verify(mockSeeder).seed();
-  }
-
-  class ExampleSeedRunner extends SeedRunner {
-    ExampleSeedRunner(boolean enable) {
-      super(enable);
-    }
-
-    @Override
-    protected List<Seeder> provideSeeders() {
-      return Collections.singletonList(mockSeeder);
-    }
   }
 
   @Test(expected = RuntimeException.class)
   public void should_error_when_providers_is_null() {
-    new NullSeedRunner(true);
+    spy(new SeedRunner(true) {
+      @Override
+      protected List<Seeder> provideSeeders() {
+        return null;
+      }
+    });
   }
 
-  class NullSeedRunner extends SeedRunner {
-    NullSeedRunner(boolean enable) {
-      super(enable);
-    }
+  @Test
+  public void should_run() {
+    Seeder mockSeeder = mock(Seeder.class);
 
-    @Override
-    protected List<Seeder> provideSeeders() {
-      return null;
-    }
+    new SeedRunner(true) {
+      @Override
+      protected List<Seeder> provideSeeders() {
+        return seeders(mockSeeder);
+      }
+    };
+
+    verify(mockSeeder).clean();
+    verify(mockSeeder).seed();
   }
 }

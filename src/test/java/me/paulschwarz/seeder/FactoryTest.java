@@ -1,111 +1,127 @@
 package me.paulschwarz.seeder;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.util.List;
 import java.util.function.Consumer;
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FactoryTest {
 
-  @Test
-  public void make() {
-    ExampleFactory factory = new ExampleFactory(null);
+  private Consumer<ExampleModel> mockSaveFunction;
 
-    Assert.assertEquals("foo", factory.make().name);
+  @Before
+  @SuppressWarnings("unchecked")
+  public void setUp() {
+    mockSaveFunction = mock(Consumer.class);
   }
 
   @Test
-  public void makeWithInlineLambda() {
+  public void should_make_one_model() {
+    ExampleFactory factory = new ExampleFactory(null);
+
+    assertEquals("foo", factory.make().name);
+  }
+
+  @Test
+  public void should_make_one_model_inline_modifier() {
     ExampleFactory factory = new ExampleFactory(null);
 
     ExampleModel model = factory.modify((m) -> m.name = "bar").make();
 
-    Assert.assertEquals("bar", model.name);
+    assertEquals("bar", model.name);
   }
 
   @Test
-  public void makeWithDeclaredLambda() {
+  public void should_make_one_model_with_declared_modifier() {
     ExampleFactory factory = new ExampleFactory(null);
 
     ExampleModel model = factory.modify(ExampleFactory::allCaps).make();
 
-    Assert.assertEquals("FOO", model.name);
+    assertEquals("FOO", model.name);
   }
 
   @Test
-  public void makeWithLambdaAndReset() {
+  public void should_reset_factory_after_making_one_model() {
     ExampleFactory factory = new ExampleFactory(null);
 
     ExampleModel model1 = factory.modify(ExampleFactory::allCaps).make();
-
     ExampleModel model2 = factory.make();
 
-    Assert.assertEquals("FOO", model1.name);
-    Assert.assertEquals("foo", model2.name);
+    assertEquals("FOO", model1.name);
+    assertEquals("foo", model2.name);
   }
 
   @Test
-  public void makeMultipleAndReset() {
+  public void should_reset_factory_after_making_many_models() {
     ExampleFactory factory = new ExampleFactory(null);
 
     List<ExampleModel> models = factory.modify(ExampleFactory::allCaps).make(5);
-
     ExampleModel model = factory.make();
 
-    Assert.assertEquals("foo", model.name);
-    Assert.assertEquals(5, models.size());
-    models.forEach((m) -> Assert.assertEquals("FOO", m.name));
+    assertEquals(5, models.size());
+    models.forEach((m) -> assertEquals("FOO", m.name));
+    assertEquals("foo", model.name);
   }
 
   @Test
-  public void save() {
-    ExampleORM saveFunction = Mockito.mock(ExampleORM.class);
-    ExampleFactory factory = new ExampleFactory(saveFunction);
+  public void should_save_one_model() {
+    ExampleFactory factory = new ExampleFactory(mockSaveFunction);
 
     ExampleModel model = factory.save();
 
-    Assert.assertEquals("foo", model.name);
-    Mockito.verify(saveFunction).accept(model);
+    assertEquals("foo", model.name);
+    verify(mockSaveFunction).accept(model);
   }
 
   @Test
-  public void saveWithInlineLambda() {
-    ExampleORM saveFunction = Mockito.mock(ExampleORM.class);
-    ExampleFactory factory = new ExampleFactory(saveFunction);
+  public void should_save_one_model_inline_modifier() {
+    ExampleFactory factory = new ExampleFactory(mockSaveFunction);
 
     ExampleModel model = factory.modify((m) -> m.name = "bar").save();
 
-    Assert.assertEquals("bar", model.name);
-    Mockito.verify(saveFunction).accept(model);
+    assertEquals("bar", model.name);
+    verify(mockSaveFunction).accept(model);
   }
 
   @Test
-  public void saveWithDeclaredLambda() {
-    ExampleORM saveFunction = Mockito.mock(ExampleORM.class);
-    ExampleFactory factory = new ExampleFactory(saveFunction);
+  public void should_save_one_model_declared_modifier() {
+    ExampleFactory factory = new ExampleFactory(mockSaveFunction);
 
     ExampleModel model = factory.modify(ExampleFactory::allCaps).save();
 
-    Assert.assertEquals("FOO", model.name);
-    Mockito.verify(saveFunction).accept(model);
+    assertEquals("FOO", model.name);
+    verify(mockSaveFunction).accept(model);
   }
 
   @Test
-  public void saveMultipleAndReset() {
-    ExampleORM saveFunction = Mockito.mock(ExampleORM.class);
-    ExampleFactory factory = new ExampleFactory(saveFunction);
+  public void should_reset_factory_after_saving_one_model() {
+    ExampleFactory factory = new ExampleFactory(mockSaveFunction);
 
-    List<ExampleModel> models = factory.modify(ExampleFactory::allCaps).save(5);
+    ExampleModel model1 = factory.modify(ExampleFactory::allCaps).save();
+    ExampleModel model2 = factory.save();
 
-    ExampleModel model = factory.save();
-
-    Assert.assertEquals("foo", model.name);
-    Assert.assertEquals(5, models.size());
-    models.forEach((m) -> Assert.assertEquals("FOO", m.name));
+    assertEquals("FOO", model1.name);
+    assertEquals("foo", model2.name);
   }
 
-  interface ExampleORM extends Consumer<ExampleModel> {}
+  @Test
+  public void should_reset_factory_after_saving_many_models() {
+    ExampleFactory factory = new ExampleFactory(mockSaveFunction);
+
+    List<ExampleModel> models = factory.modify(ExampleFactory::allCaps).save(5);
+    ExampleModel model = factory.save();
+
+    assertEquals("foo", model.name);
+    assertEquals(5, models.size());
+    models.forEach((m) -> assertEquals("FOO", m.name));
+  }
 
   static class ExampleFactory extends Factory<ExampleModel> {
 
@@ -113,17 +129,15 @@ public class FactoryTest {
       super(saveFunction);
     }
 
-    static void allCaps(ExampleModel model) {
-      model.name = model.name.toUpperCase();
-    }
-
     @Override
     protected ExampleModel create() {
       ExampleModel model = new ExampleModel();
-
       model.name = "foo";
-
       return model;
+    }
+
+    static void allCaps(ExampleModel model) {
+      model.name = model.name.toUpperCase();
     }
   }
 
