@@ -1,6 +1,5 @@
 name := "seeder"
-scalaVersion := "2.12.4"
-version := "0.1.1"
+version := "0.1.2"
 organization := "me.paulschwarz"
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 
