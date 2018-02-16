@@ -1,6 +1,4 @@
-[ ![Download](https://api.bintray.com/packages/paulschwarz/maven/seeder/images/download.svg) ](https://bintray.com/paulschwarz/maven/seeder/_latestVersion)
-
-# Seeding
+# Seeder [![Download](https://api.bintray.com/packages/paulschwarz/maven/seeder/images/download.svg)](https://bintray.com/paulschwarz/maven/seeder/_latestVersion) [![Build Status](https://travis-ci.org/paulschwarz/seeder.svg?branch=master)](https://travis-ci.org/paulschwarz/seeder)
 
 Seeding helps you set up test scenarios quickly. Two use cases immediately spring to mind.
 
