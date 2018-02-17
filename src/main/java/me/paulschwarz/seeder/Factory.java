@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 public abstract class Factory<M> {
 
-  protected static Faker faker = new Faker();
+  protected static final Faker faker = new Faker();
   private List<Consumer<M>> modifiers = new ArrayList<>();
   private Consumer<M> save;
 

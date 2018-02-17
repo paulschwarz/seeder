@@ -102,9 +102,8 @@ as > Sources Root*.
 
 ### Run only locally
 
-The `SeedRunner` constructor takes a boolean argument `enable`. This flag tells the seed runner
-whether it should run. It’s a good idea to enable the seed runner based on the environment being
-“local” (or “develop”), but not “testing” and certainly not “production”!
+It’s a good idea to call `run()` on the seed runner based on the environment being “local” (or 
+“develop”), but not “testing” and certainly not “production”!
 
 ### Integrating with Play Framework
 
@@ -115,13 +114,22 @@ and `dev/database/factories`. Seeders would then be registered in `dev/database/
 You may also set up a Play module specifically to handle this in `dev/DevModule`.
 
     import com.google.inject.AbstractModule;
+    import com.google.inject.Inject;
     import database.DatabaseSeeder;
+    import play.Environment;
     
     public class DevModule extends AbstractModule {
     
       @Override
       public void configure() {
-        bind(DatabaseSeeder.class).asEagerSingleton();
+        bind(Dev.class).asEagerSingleton();
+      }
+      
+      static class Dev {
+        @Inject
+        Dev(Environment environment, DatabaseSeeder databaseSeeder) {
+          if (environment.isDev()) databaseSeeder.run();
+        }
       }
     }
         

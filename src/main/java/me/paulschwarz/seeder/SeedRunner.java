@@ -9,17 +9,11 @@ public abstract class SeedRunner {
 
   private static final Logger LOG = LoggerFactory.getLogger(SeedRunner.class);
 
-  protected SeedRunner(boolean enable) {
-    if (!enable) return;
-
-    try {
-      run();
-    } catch (Exception e) {
-      throw new RuntimeException("Seeding failed: " + e.getMessage(), e);
-    }
+  protected static List<Seeder> seeders(Seeder... seeders) {
+    return Arrays.asList(seeders);
   }
 
-  void run() {
+  public void run() {
     LOG.info("Seeding started");
 
     for (Seeder seeder : provideSeeders()) {
@@ -33,10 +27,6 @@ public abstract class SeedRunner {
     }
 
     LOG.info("Seeding done");
-  }
-
-  protected static List<Seeder> seeders(Seeder... seeders) {
-    return Arrays.asList(seeders);
   }
 
   /**

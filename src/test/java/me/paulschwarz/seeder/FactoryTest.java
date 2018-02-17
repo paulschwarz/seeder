@@ -129,15 +129,15 @@ public class FactoryTest {
       super(saveFunction);
     }
 
+    static void allCaps(ExampleModel model) {
+      model.name = model.name.toUpperCase();
+    }
+
     @Override
     protected ExampleModel create() {
       ExampleModel model = new ExampleModel();
       model.name = "foo";
       return model;
-    }
-
-    static void allCaps(ExampleModel model) {
-      model.name = model.name.toUpperCase();
     }
   }
 
