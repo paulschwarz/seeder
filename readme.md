@@ -42,6 +42,7 @@ persistence of your choice by invoking the callback provided in the constructor.
 The following code is typically prevalent in test cases where you want to test scenarios that depend 
 on models being in a given state.
 
+#### Making Model
 Make a single user:
 
         User user = userFactory.make();
@@ -50,6 +51,7 @@ Make multiple users:
 
         List<User> users = userFactory.make(5);
 
+#### Saving Model
 Save a single user:
 
         User user = userFactory.save();
@@ -61,7 +63,7 @@ Save multiple users:
 Overriding fields with a lambda modifier:
             
         userFactory
-            .modify(user -> user.setName("Kermit"))
+            .modify(user -> user.setFirstName("Kermit"))
             .save();
             
 Overriding fields with a declared modifier:
@@ -73,10 +75,18 @@ Overriding fields with a declared modifier:
 Overriding fields with multiple modifiers:
 
         userFactory
-            .modify(user -> user.setName("Kermit"))
+            .modify(user -> user.setFirstName("Kermit"))
             .modify(UserFactory::administrator)
             .save();
             
+Overriding multiple fields with a lambda's body:
+
+        userFactory
+            .modify(user -> {
+                user.setFirstName("Kermit");
+                user.setLastName("Smith");
+            }).save();
+
 ## Seeders
 
 Until this point, you have everything you need to run automated tests against an in-memory database,
